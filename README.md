@@ -38,18 +38,19 @@ reports/ -> notes, drafts, documentation
 
 Clone the repo and install dependencies:
 
-````bash
+```bash
 git clone https://github.com/gaby-byb/ransomware-detection-ml.git
 cd ransomware-detection-ml
 pip install -r requirements.txt
+```
 
 ## ✅ Progress
+
 - [x] Repo initialized
 - [ ] Add preprocessing pipeline
 - [ ] Train baseline ML model
 - [ ] Run evaluation metrics
 - [ ] Write final report/paper
-
 
 📌 Notes
 
@@ -57,11 +58,10 @@ pip install -r requirements.txt
 
     This is a work in progress (target completion: Nov 15, 2025).
 
-
 ---
 
 ### 📝 `data/README.md`
-```markdown
+
 # Data Notes
 
 Datasets are not included in this repo due to size and security concerns.
@@ -71,5 +71,3 @@ Please obtain datasets from the following sources:
 - MITRE ATT&CK-based log samples
 
 After downloading, place them in the `/data` folder.
-```
-````
