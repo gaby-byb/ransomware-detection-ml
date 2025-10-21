@@ -47,9 +47,9 @@ pip install -r requirements.txt
 ## ✅ Progress
 
 - [x] Repo initialized
-- [ ] Add preprocessing pipeline
-- [ ] Train baseline ML model
-- [ ] Run evaluation metrics
+- [x] Add preprocessing pipeline
+- [x] Train baseline ML model
+- [x] Run evaluation metrics
 - [ ] Write final report/paper
 
 📌 Notes
@@ -67,7 +67,8 @@ pip install -r requirements.txt
 Datasets are not included in this repo due to size and security concerns.
 Please obtain datasets from the following sources:
 
-- [Kaggle Ransomware Detection Dataset](https://www.kaggle.com/)
-- MITRE ATT&CK-based log samples
+- [ransomware_vs_benign dataset](https://www.kaggle.com/datasets/amdj3dax/ransomware-detection-data-set)
+- [malware_vs_benign dataset](https://www.kaggle.com/datasets/fanbyprinciple/file-pe-headers)
+- [ransomware_vs_malware](https://github.com/DA-Proj/PE-Malware-Dataset1/blob/main/Header.csv)
 
 After downloading, place them in the `/data` folder.
