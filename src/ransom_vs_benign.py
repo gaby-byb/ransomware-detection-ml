@@ -1,4 +1,5 @@
 import warnings
+import joblib
 warnings.filterwarnings("ignore")
 import pandas as pd
 
@@ -112,3 +113,13 @@ evaluate_model(xgb, X_test, y_test, model_name="XGBoost")
 
 # SVM 
 evaluate_model(svm_model, X_test, y_test, model_name="SVM")
+
+# --- for the  CLI ----
+
+joblib.dump(rf, "models/ransomware_detector.pkl")
+
+#save dataset without labels to test
+X_train.to_csv("data/X_ransom_vs_benign.csv", index=False)
+
+#save labels for confirmation
+y_train.to_csv("data/labels_ransom_vs_benign.csv", index=False)
