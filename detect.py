@@ -20,7 +20,7 @@ def detect(model_path, data_path, labels_path=None, threshold=0.5):
     
     #holds the target feature of the sample
     true_label = y.iloc[test_sample_index].values[0]
-    if true_label == 1:
+    if true_label == 0:
         real_label = "Ransomware"
     else:
         real_label = "Benign"
@@ -28,9 +28,9 @@ def detect(model_path, data_path, labels_path=None, threshold=0.5):
 
     #predict probability of ransomware
     prob = model.predict_proba(test_sample)[0][1]
-    label = "Ransomware" if prob > 0.6 else "Benign"
+    label = "Benign" if prob > 0.6 else "Ransomware"
 
-    print(f"Model prediction: {label}\nProbability: {prob * 100:.0f}%")
+    print(f"Model prediction: {label}")
     print(f"True Label: {real_label}.\n")
 
     if str(real_label) == label:

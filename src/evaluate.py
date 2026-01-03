@@ -4,7 +4,8 @@ from sklearn.metrics import (
     classification_report,
     matthews_corrcoef,
     precision_recall_curve,
-    auc
+    auc,
+    confusion_matrix
 )
 import numpy as np
  
@@ -15,14 +16,14 @@ def evaluate_model(model, X_test, y_test, model_name="Model"):
     """
     print(f"\n--- {model_name.upper()} RESULTS ---")
     
-    # Predictions
+    #Predictions
     y_pred = model.predict(X_test)
 
-    # Basic metrics
+    #Basic metrics
     accuracy = accuracy_score(y_test, y_pred)
     mcc = matthews_corrcoef(y_test, y_pred)
 
-    # Try to calculate PR-AUC (only if model has predict_proba or decision_function)
+    #Try to calculate PR-AUC (only if model has predict_proba or decision_function)
     pr_auc = None
     try:
         if hasattr(model, "predict_proba"):
@@ -38,6 +39,11 @@ def evaluate_model(model, X_test, y_test, model_name="Model"):
     except Exception as e:
         print(f"Could not compute PR-AUC: {e}")
 
+    #Confusion matrix to calculate false negative/false positive
+
+    cm = confusion_matrix(y_test, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+
     # Print results
     print(f"{'Accuracy:':<20} {accuracy:.3f}")
     print(f"{'MCC:':<20} {mcc:.3f}")
@@ -45,3 +51,5 @@ def evaluate_model(model, X_test, y_test, model_name="Model"):
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred, zero_division=0))
     print("="*60) 
+    print(f"{'False Positives:':<20} {fp}")
+    print(f"{'False Negatives:':<20} {fn}")

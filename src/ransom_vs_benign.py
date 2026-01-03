@@ -3,8 +3,8 @@ import joblib
 warnings.filterwarnings("ignore")
 import pandas as pd
 
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -39,8 +39,12 @@ def preprocess(df):
     meta = df[['FileName', 'md5Hash']].copy()
     df = df.drop(columns=['FileName', 'md5Hash'])
 
-    X = df.drop(columns=['Benign']) #train
-    y = df['Benign'] #target
+    #Create a new target column Ransom
+    df["Ransomware"] = df["Benign"].map({1:0, 0:1})
+    df = df.drop(columns=["Benign"])
+
+    X = df.drop(columns=['Ransomware']) #train
+    y = df['Ransomware'] #target
 
     return X, y, meta
 
@@ -49,7 +53,7 @@ X, y, meta = preprocess(df)
 
 
 # --- Split ---
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42, stratify=y)
 
 
 #----- RANDOM FOREST -----#
@@ -64,13 +68,6 @@ rf = RandomForestClassifier(max_depth= 30,
 # Train
 rf.fit(X_train, y_train)
 
-# Evaluate
-y_pred = rf.predict(X_test)
-
-print("\n--- Random Forest ---")
-print(classification_report(y_test, y_pred, digits=3))
-print(confusion_matrix(y_test, y_pred))
-
 
 #----- XGBoost -----#
 xgb = XGBClassifier(
@@ -84,11 +81,7 @@ xgb = XGBClassifier(
 )
 xgb.fit(X_train, y_train)
 
-y_pred = xgb.predict(X_test)
-cross_val_score(xgb, X, y, cv=5, scoring='f1')
-#evaluate
-print("--- XGBoost ---")
-print("XGBoost Metrics", classification_report(y_test, y_pred))
+
 
 # ---- SVM ----
 
@@ -101,9 +94,7 @@ X_test_scaled = scaler.transform(X_test)
 svm_model = SVC(kernel='rbf', class_weight='balanced')
 svm_model.fit(X_train_scaled, y_train)
 
-print("--- SVM ---")
-print(classification_report(y_test, svm_model.predict(X_test_scaled)))
-
+# Evaluation:
 
 # Random Forest
 evaluate_model(rf, X_test, y_test, model_name="Random Forest")
@@ -112,7 +103,7 @@ evaluate_model(rf, X_test, y_test, model_name="Random Forest")
 evaluate_model(xgb, X_test, y_test, model_name="XGBoost")
 
 # SVM 
-evaluate_model(svm_model, X_test, y_test, model_name="SVM")
+evaluate_model(svm_model, X_test_scaled, y_test, model_name="SVM")
 
 # --- for the  CLI ----
 
