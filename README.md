@@ -5,7 +5,7 @@ It aims to build a machine learning system that detects ransomware activity by a
 
 ---
 
-## 🚀 Project Overview
+## Project Overview
 
 Ransomware remains one of the most disruptive forms of cybercrime, often leaving organizations with financial and operational damage.
 
@@ -25,7 +25,7 @@ Tools & Libraries:
 
 ---
 
-## 📂 Repo Structure
+## Repo Structure
 
 data/ -> placeholder for datasets (not included in repo)
 notebooks/ -> Jupyter notebooks for exploration and experiments
@@ -44,13 +44,13 @@ cd ransomware-detection-ml
 pip install -r requirements.txt
 ```
 
-## ✅ Progress
+## Progress
 
 - [x] Repo initialized
 - [x] Add preprocessing pipeline
 - [x] Train baseline ML model
 - [x] Run evaluation metrics
-- [ ] Write final report/paper
+- [x] Write final report/paper
 
 📌 Notes
 
