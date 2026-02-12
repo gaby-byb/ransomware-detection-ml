@@ -1,36 +1,99 @@
-# Machine Learning-based Ransomware Detection
+# Static PE-Header Based Ransomware Detection
 
-This project is my Senior Capstone at the University of North Georgia.  
-It aims to build a machine learning system that detects ransomware activity by analyzing system and network logs.
+This repository implements an end-to-end machine learning pipeline for detecting ransomware using static Portable Executable (PE) header features.
+
+Rather than evaluating a single dataset in isolation, this project systematically analyzes how static PE-header features perform across three progressively difficult binary classification tasks, exposing both strengths and limitations of static-only detection.
 
 ---
 
 ## Project Overview
 
-Ransomware remains one of the most disruptive forms of cybercrime, often leaving organizations with financial and operational damage.
+This project asks the question:
+Do static PE-header features generalize across different classification tasks and malware distributions?
 
-The goal of this project is to:
+To answer this, three distinct binary tasks were constructed:
 
-- Train ML models on **static log data** to classify ransomware vs. benign activity.
-- Normalize and preprocess logs for consistent feature extraction.
-- Evaluate performance using multiple metrics (accuracy, precision, recall, F1-score).
-- Compare results across different models (Decision Trees, Random Forests, SVM, etc.).
+- Ransomware vs Benign
+- Malware vs Benign
+- Ransomware vs Other Malware Families
 
-Tools & Libraries:
+## Methodology
 
-- Python 3.10+
-- scikit-learn
-- pandas, numpy
-- matplotlib, seaborn (for analysis)
+The pipeline is fully reproducible and includes:
+
+### Data Preprocessing
+
+- Removal of identifier and leakage-prone features
+- Log transformation of skewed numeric fields
+- One-hot encoding of categorical fields (e.g., Machine type)
+- Missing value handling
+- Feature alignment to match training schema
+
+### Class Imbalance Handling
+
+- SMOTE (Synthetic Minority Oversampling Technique)
+- Model-level class weighting
+- Stratified 5-fold cross-validation
+
+### Models Evaluated
+
+- Random Forest
+- XGBoost
+- Linear SVM
+
+Hyperparameters were tuned using GridSearchCV or RandomizedSearchCV.
+
+### Evaluation Metrics
+
+Due to dataset imbalance, evaluation emphasizes:
+
+- Matthews Correlation Coefficient (MCC)
+- Precision / Recall / F1-score
+- PR-AUC
+- Confusion Matrix
+
+### Model Interpretability
+
+SHAP (SHapley Additive Explanations) was applied to tree-based models to:
+
+- Identify globally important PE-header features
+- Analyze feature contribution distributions
+- Compare feature influence across datasets
 
 ---
 
-## Repo Structure
+## Key Findings
 
-data/ -> placeholder for datasets (not included in repo)
-notebooks/ -> Jupyter notebooks for exploration and experiments
-src/ -> source code (preprocessing, model training, utils)
-reports/ -> notes, drafts, documentation
+- Static PE-header features perform strongly in ransomware vs benign and malware vs benign tasks.
+- Performance degrades in ransomware vs other malware families, revealing limitations of static-only detection.
+- No single feature dominates predictions; decisions rely on feature combinations.
+- Tree-based models provided the strongest balance of robustness and interpretability.
+
+These results indicate that static analysis alone is insufficient for fine-grained malware family discrimination.
+
+---
+
+## Repository Structure
+
+data/ -> Dataset placeholders (not included)
+notebooks/ -> Exploratory analysis and experiments
+src/ -> Preprocessing, training, evaluation pipeline
+reports/ -> Figures, SHAP plots, manuscript drafts
+
+---
+
+## Environment
+
+- Python 3.11
+- scikit-learn
+- XGBoost
+- imbalanced-learn
+- SHAP
+- pandas
+- numpy
+- matplotlib
+
+See requirements.txt for exact versions.
 
 ---
 
@@ -43,14 +106,6 @@ git clone https://github.com/gaby-byb/ransomware-detection-ml.git
 cd ransomware-detection-ml
 pip install -r requirements.txt
 ```
-
-## Progress
-
-- [x] Repo initialized
-- [x] Add preprocessing pipeline
-- [x] Train baseline ML model
-- [x] Run evaluation metrics
-- [x] Write final report/paper
 
 📌 Notes
 
