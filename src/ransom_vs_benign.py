@@ -4,10 +4,10 @@ warnings.filterwarnings("ignore")
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import Pipeline
 
 from evaluate import evaluate_model
 
@@ -57,7 +57,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_
 
 
 #----- RANDOM FOREST -----#
-#Using parameters found using RandomSeach (see ipynb)
+#best parameters found using RandomSearch (see ipynb)
 
 rf = RandomForestClassifier(max_depth= 30, 
                             min_samples_leaf= 1, 
@@ -70,29 +70,40 @@ rf.fit(X_train, y_train)
 
 
 #----- XGBoost -----#
+
+#best parameters found with gridSearch (see ipynb)
 xgb = XGBClassifier(
     n_estimators=200,
     learning_rate=0.1,
-    max_depth=6,
+    max_depth=8,
     subsample=0.8,
     colsample_bytree=0.8,
+    scale_pos_weight = (len(y_train) - sum(y_train)) / sum(y_train),  # balance weight
     random_state=42,
     eval_metric='logloss'  # suppresses warning
 )
+
+
 xgb.fit(X_train, y_train)
 
 
 
 # ---- SVM ----
 
-#scaling is required for linear models
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+#Only need to scale data for SVM model 
+# Best params based on ipynb search 
+final_svm = Pipeline([
+    ("scaler", StandardScaler()),
+    ("svm", LinearSVC(
+        C=10,
+        dual=False,
+        max_iter=20000,
+        tol=1e-3,
+        class_weight="balanced"
+    ))
+])
 
-#train
-svm_model = SVC(kernel='rbf', class_weight='balanced')
-svm_model.fit(X_train_scaled, y_train)
+final_svm.fit(X_train, y_train)
 
 # Evaluation:
 
@@ -103,7 +114,7 @@ evaluate_model(rf, X_test, y_test, model_name="Random Forest")
 evaluate_model(xgb, X_test, y_test, model_name="XGBoost")
 
 # SVM 
-evaluate_model(svm_model, X_test_scaled, y_test, model_name="SVM")
+evaluate_model(final_svm, X_test, y_test, model_name="SVM")
 
 # --- for the  CLI ----
 

@@ -49,7 +49,7 @@ def evaluate_model(model, X_test, y_test, model_name="Model"):
     print(f"{'MCC:':<20} {mcc:.3f}")
     print(f"{'PR-AUC:':<20} {pr_auc:.3f}" if pr_auc is not None else "PR-AUC: N/A")
     print("\nClassification Report:")
-    print(classification_report(y_test, y_pred, zero_division=0))
+    print(classification_report(y_test, y_pred, zero_division=0, digits=4))
     print("="*60) 
     print(f"{'False Positives:':<20} {fp}")
     print(f"{'False Negatives:':<20} {fn}")
